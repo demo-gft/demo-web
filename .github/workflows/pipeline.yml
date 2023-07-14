@@ -42,3 +42,30 @@ jobs:
       with:
         name: bicep
         path: ./bicep
+
+# inclua um job de deploy para o ambiente de dev
+
+  deploy-dev:
+    needs: build
+    environment: dev
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: myapp
+        path: ${{env.DOTNET_ROOT}}/myapp
+
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: bicep
+        path: ./bicep
+
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Deploy
+      run: |
+        az group deployment create --resource-group home --template-file ./bicep/deploy.bicep  --parameters appName=demoarrudagft99 --parameters location=brazilsouth
