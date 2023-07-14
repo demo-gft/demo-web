@@ -35,4 +35,3 @@ resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   }
 }
 
-output endpoint string = webApp.defaultHostName
