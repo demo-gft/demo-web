@@ -69,3 +69,11 @@ jobs:
     - name: Deploy
       run: |
         az group deployment create --resource-group home --template-file ./bicep/deploy.bicep  --parameters appName=demoarrudagft99 --parameters location=brazilsouth
+
+# inclua uma task para o deploy do azure app service que esta na pasta ./myapp usando a task de deploy do azure
+
+    - name: Deploy
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: demoarrudagft99
+        package: ./myapp
