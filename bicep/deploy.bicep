@@ -1,37 +1,36 @@
 param appName string
 param location string
-param sku string = 'F1'
+param sku string = 'B1'
+param netFrameworkVersion string = 'v6.0'
+param runtimeStack string = 'DOTNETCORE|6.0'
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
-  name: appName
+  name: '${appName}-plan'
   location: location
+  kind: 'linux'
   sku: {
     name: sku
-    tier: 'Free'
-  }
-  properties: {
-    numberOfWorkers: 1
+    tier: 'Basic'
   }
 }
 
 resource webApp 'Microsoft.Web/sites@2021-02-01' = {
   name: appName
   location: location
-  dependsOn: [
-    appServicePlan
-  ]
+  kind: 'app'
   properties: {
     serverFarmId: appServicePlan.id
     siteConfig: {
       appSettings: [
         {
-          name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: '1'
+          name: 'WEBSITE_DOTNET_VERSION'
+          value: netFrameworkVersion
+        }
+        {
+          name: 'FUNCTIONS_WORKER_RUNTIME'
+          value: runtimeStack
         }
       ]
-      netFrameworkVersion: 'v6.0'
-      use32BitWorkerProcess: false
     }
   }
 }
-
